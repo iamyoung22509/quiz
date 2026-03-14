@@ -5,16 +5,15 @@
 <title>수학 문제</title>
 <style>
 body{font-family:Arial;margin:20px;}
-header{display:flex;justify-content:space-between;margin-bottom:20px;}
-.topic button,.level button,.math button{font-size:16px;padding:8px 12px;margin:2px;}
-.container{display:flex;justify-content:space-between;}
-#q{font-size:36px;text-align:center;margin:20px 0;line-height:1.5;}
-#answer{font-size:22px;padding:6px;width:280px;text-align:center;display:block;margin:10px auto;}
-#result{font-size:22px;text-align:center;margin-top:15px;}
-.math{text-align:center;margin:10px 0;}
-canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
+.container{display:flex;justify-content:space-between;margin-bottom:20px;}
+.topic, .level{text-align:center;}
 #mainContent{display:flex;justify-content:center;align-items:flex-start;gap:20px;}
-.leftPanel,#rightPanel{text-align:center;}
+.problemArea{width:500px;text-align:center;}
+#q{font-size:28px;margin-bottom:10px;line-height:1.4;}
+#answer{font-size:22px;padding:6px;width:280px;text-align:center;display:block;margin:10px auto;}
+.math{text-align:center;margin:10px 0;}
+#result{text-align:center;font-size:22px;margin-top:15px;}
+canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
 </style>
 </head>
 <body>
@@ -22,7 +21,7 @@ canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
 <h1 style="text-align:center;">수학 문제</h1>
 
 <div class="container">
-  <div class="leftPanel topic">
+  <div class="topic">
     <b>단원 선택:</b><br>
     <button onclick="topic='root'; newQ()">거듭제곱근</button>
     <button onclick="topic='log'; newQ()">로그</button>
@@ -30,8 +29,7 @@ canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
     <button onclick="topic='seq'; newQ()">수열</button>
     <button onclick="topic='triangle'; newQ()">삼각형 도형</button>
   </div>
-
-  <div class="rightPanel level">
+  <div class="level">
     <b>난이도:</b><br>
     <button onclick="level=1; newQ()">1</button>
     <button onclick="level=2; newQ()">2</button>
@@ -40,11 +38,12 @@ canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
 </div>
 
 <div id="mainContent">
-  <div>
+  <div class="problemArea">
     <p id="q"></p>
     <input id="answer" placeholder="답 입력">
     <div class="math">
       <button onclick="add('√')">√</button>
+      <button onclick="add('³√')">³√</button>
       <button onclick="add('π')">π</button>
       <button onclick="add('sin')">sin</button>
       <button onclick="add('cos')">cos</button>
@@ -56,10 +55,9 @@ canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
     <button onclick="newQ()">다음 문제</button>
     <p id="result"></p>
   </div>
-  
+
   <div>
-    <canvas id="canvas"></canvas>
-    <br>
+    <canvas id="canvas"></canvas><br>
     <button onclick="clearCanvas()">풀이 지우기</button>
   </div>
 </div>
@@ -67,7 +65,7 @@ canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
 <script>
 let topic='root', level=1, answer;
 
-// 랜덤 함수
+// 랜덤
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
 // 문제 생성
@@ -77,68 +75,75 @@ function newQ(){
 
   let qtext="", ans="";
 
-  // 난이도 단계별 복합 연산
-  if(topic=='root'){
-    // 제곱근 문제, 루트 완전 제곱수 처리
-    let n=rand(2,10*level);
-    let sq=n*n;
-    qtext="√"+sq+" 를 간단히 하여라.";
-    ans=String(n);
-  }
-
-  if(topic=='log'){
-    // 로그 문제 숫자 제한 (몇백 단위)
-    let base=rand(2,5);
-    let power=rand(2,3+level);
-    let num=Math.pow(base,power);
-    qtext="log"+base+"("+num+") 의 값은?";
-    ans=String(power);
-  }
-
-  if(topic=='tri'){
-    let list=[
-      ["sin30°","1/2"],
-      ["cos60°","1/2"],
-      ["tan45°","1"],
-      ["sin60°","√3/2"],
-      ["cos45°","1/√2"]
-    ]
-    let p=list[rand(0,list.length-1)];
-    qtext=p[0]+" 의 값은?";
-    ans=p[1];
-  }
-
-  if(topic=='seq'){
-    // 난이도에 따라 등차/등비 혼합
-    if(rand(1,2)==1){
-      let a1=rand(1,5*level);
-      let d=rand(1,5*level);
-      let n=rand(3,6+level);
-      qtext="등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" 값을 구하라.";
-      ans=String(a1+(n-1)*d);
+  // 고난도 조건 문제 예시
+  if(topic=='root' && level>=2){
+    let aMin=20,aMax=50;
+    let bMin=60,bMax=150;
+    let validPairs=[];
+    for(let a=aMin;a<=aMax;a++){
+      for(let b=bMin;b<=bMax;b++){
+        let val=Math.sqrt(a)+Math.cbrt(b);
+        if(Number.isInteger(val)) validPairs.push([a,b,val]);
+      }
+    }
+    if(validPairs.length>0){
+      let maxPair=validPairs.reduce((prev,curr)=>curr[0]+curr[1]>prev[0]+prev[1]?curr:prev,[0,0,0]);
+      qtext=`20 ≤ a ≤ 50, 60 ≤ b ≤ 150 일때 √a + ³√b 가 자연수가 되도록 하는 a,b에 대하여 a+b의 최댓값을 구하시오.`;
+      ans=String(maxPair[0]+maxPair[1]);
     }else{
-      let a1=rand(1,5*level);
-      let r=rand(2,3);
-      let n=rand(3,5);
-      qtext="등비수열 a₁="+a1+", r="+r+" 일 때 a"+n+" 값을 구하라.";
-      ans=String(a1*Math.pow(r,n-1));
+      qtext="조건을 만족하는 a,b가 없습니다. (예시)";
+      ans="예시 없음";
     }
   }
-
-  if(topic=='triangle'){
-    let a=rand(3,10*level), b=rand(3,10*level);
-    if(rand(1,2)==1){
-      qtext="직각삼각형 두 변 "+a+", "+b+" 일 때 빗변 길이?";
-      let c=Math.sqrt(a*a+b*b);
-      // 만약 제곱근 완전제곱이면 정수로 표시
-      let cInt=Math.round(c);
-      if(cInt*cInt==(a*a+b*b)) ans=String(cInt);
-      else ans="√"+(a*a+b*b);
-    }else{
-      let angle=[30,45,60][rand(0,2)];
-      let h=Math.round(a*Math.sin(angle*Math.PI/180));
-      qtext="직각삼각형 한 변 "+a+", 각 θ="+angle+"° 높이 h?";
-      ans=String(h);
+  else{
+    // 일반 난이도 문제
+    if(topic=='root'){
+      let n=rand(2,10*level);
+      qtext="√"+(n*n)+" 를 간단히 하여라.";
+      ans=String(n);
+    }
+    if(topic=='log'){
+      let base=rand(2,5);
+      let power=rand(2,3+level);
+      let num=Math.pow(base,power);
+      qtext="log"+base+"("+num+") 의 값은?";
+      ans=String(power);
+    }
+    if(topic=='tri'){
+      let list=[
+        ["sin30°","1/2"],
+        ["cos60°","1/2"],
+        ["tan45°","1"],
+        ["sin60°","√3/2"]
+      ]
+      let p=list[rand(0,list.length-1)];
+      qtext=p[0]+" 의 값은?";
+      ans=p[1];
+    }
+    if(topic=='seq'){
+      if(rand(1,2)==1){
+        let a1=rand(1,5*level); let d=rand(1,5*level); let n=rand(3,6);
+        qtext="등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" 값을 구하라.";
+        ans=String(a1+(n-1)*d);
+      } else{
+        let a1=rand(1,5*level); let r=rand(2,3); let n=rand(3,5);
+        qtext="등비수열 a₁="+a1+", r="+r+" 일 때 a"+n+" 값을 구하라.";
+        ans=String(a1*Math.pow(r,n-1));
+      }
+    }
+    if(topic=='triangle'){
+      let a=rand(3,10*level), b=rand(3,10*level);
+      if(rand(1,2)==1){
+        qtext="직각삼각형 두 변 "+a+", "+b+" 일 때 빗변 길이?";
+        let c=Math.sqrt(a*a+b*b);
+        let cInt=Math.round(c);
+        ans=(cInt*cInt==(a*a+b*b))? String(cInt):"√"+(a*a+b*b);
+      } else{
+        let angle=[30,45,60][rand(0,2)];
+        let h=Math.round(a*Math.sin(angle*Math.PI/180));
+        qtext="직각삼각형 한 변 "+a+", 각 θ="+angle+"° 높이 h?";
+        ans=String(h);
+      }
     }
   }
 
@@ -152,8 +157,7 @@ function add(s){document.getElementById("answer").value+=s}
 // 정답 확인
 function check(){
   let user=document.getElementById("answer").value;
-  if(user==answer)document.getElementById("result").innerText="정답!";
-  else document.getElementById("result").innerText="틀림 정답: "+answer;
+  document.getElementById("result").innerText=(user==answer)?"정답!":"틀림 정답: "+answer;
 }
 
 // 그림판
@@ -167,5 +171,7 @@ function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
 newQ();
 </script>
+</body>
+</html>
 </body>
 </html>
