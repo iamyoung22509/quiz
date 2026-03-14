@@ -3,6 +3,58 @@
 <head>
 <meta charset="utf-8">
 <title>수학 퀴즈</title>
+
+<style>
+
+body{
+text-align:center;
+font-family:Arial;
+margin-top:80px;
+}
+
+#q{
+font-size:40px;
+margin-bottom:40px;
+}
+
+input{
+font-size:25px;
+padding:10px;
+width:200px;
+text-align:center;
+}
+
+button{
+font-size:20px;
+padding:10px 20px;
+margin-top:20px;
+}
+
+#result{
+margin-top:30px;
+font-size:25px;
+}
+
+/* 분수 모양 */
+
+.frac{
+display:inline-block;
+text-align:center;
+font-size:40px;
+}
+
+.top{
+border-bottom:2px solid black;
+display:block;
+padding:0 5px;
+}
+
+.bottom{
+display:block;
+}
+
+</style>
+
 </head>
 <body>
 
@@ -10,7 +62,11 @@
 
 <p id="q"></p>
 
-<div id="choices"></div>
+<input id="answer" placeholder="답 입력">
+
+<br>
+
+<button onclick="check()">확인</button>
 
 <p id="result"></p>
 
@@ -20,94 +76,83 @@
 
 let answer
 
-let problems=[
-
-{
-q:"f(x)=x²−4x+5 일 때 f(3)의 값은?",
-choices:["2","3","4","5"],
-a:"2"
-},
-
-{
-q:"sin²θ + cos²θ = ?",
-choices:["0","1","2","sinθ"],
-a:"1"
-},
-
-{
-q:"log₂(16) + log₂(4) = ?",
-choices:["4","5","6","7"],
-a:"6"
-},
-
-{
-q:"수열 aₙ=3n+1 일 때 a₅ = ?",
-choices:["13","14","15","16"],
-a:"16"
-},
-
-{
-q:"x² −7x +10 =0 의 해는?",
-choices:["2,5","3,4","1,10","2,7"],
-a:"2,5"
-},
-
-{
-q:"lim(x→0) (sin x)/x = ?",
-choices:["0","1","∞","-1"],
-a:"1"
-},
-
-{
-q:"미분 d/dx (x³) = ?",
-choices:["3x²","x²","2x","x³"],
-a:"3x²"
-},
-
-{
-q:"cos(60°) = ?",
-choices:["1","1/2","√2","0"],
-a:"1/2"
-},
-
-{
-q:"등비수열 2,6,18,... 의 공비는?",
-choices:["2","3","4","6"],
-a:"3"
-},
-
-{
-q:"∫2x dx = ?",
-choices:["x² + C","2x²","x + C","x²"],
-a:"x² + C"
+function rand(a,b){
+return Math.floor(Math.random()*(b-a+1))+a
 }
-
-]
 
 function newQ(){
 
-let p=problems[Math.floor(Math.random()*problems.length)]
+let type=rand(1,4)
 
-answer=p.a
+/* 거듭제곱근 */
 
-document.getElementById("q").innerText=p.q
+if(type==1){
 
-let html=""
+let n=rand(2,10)
+let a=n*n*rand(2,5)
 
-p.choices.forEach(c=>{
-html+=`<button onclick="check('${c}')">${c}</button><br>`
-})
+document.getElementById("q").innerText="√"+a+" 를 간단히 하면?"
 
-document.getElementById("choices").innerHTML=html
+answer=n+"√"+(a/(n*n))
 
 }
 
-function check(c){
+/* 로그 */
 
-if(c===answer){
+if(type==2){
+
+let base=rand(2,5)
+let power=rand(2,4)
+
+let num=Math.pow(base,power)
+
+document.getElementById("q").innerText="log"+base+"("+num+") = ?"
+
+answer=String(power)
+
+}
+
+/* 삼각함수 */
+
+if(type==3){
+
+let q="sin 30° = ?"
+
+document.getElementById("q").innerHTML=
+'sin 30° = <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>'
+
+answer="1/2"
+
+}
+
+/* 수열 */
+
+if(type==4){
+
+let a1=rand(1,10)
+let d=rand(1,5)
+let n=rand(5,10)
+
+document.getElementById("q").innerText=
+"등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" = ?"
+
+answer=String(a1+(n-1)*d)
+
+}
+
+document.getElementById("answer").value=""
+document.getElementById("result").innerText=""
+
+}
+
+function check(){
+
+let user=document.getElementById("answer").value
+
+if(user==answer){
 document.getElementById("result").innerText="정답!"
 }else{
-document.getElementById("result").innerText="틀림 정답:"+answer
+document.getElementById("result").innerText="틀림 정답: "+answer
 }
 
 }
@@ -115,9 +160,6 @@ document.getElementById("result").innerText="틀림 정답:"+answer
 newQ()
 
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
