@@ -7,20 +7,22 @@
 body{font-family:Arial;margin:20px;}
 header{display:flex;justify-content:space-between;margin-bottom:20px;}
 .topic button,.level button,.math button{font-size:16px;padding:8px 12px;margin:2px;}
-#q{font-size:34px;margin-bottom:20px;line-height:1.5;}
-#answer{font-size:22px;padding:6px;width:280px;text-align:center;}
-#result{margin-top:15px;font-size:22px;}
-.math{margin:10px 0;}
-canvas{border:1px solid black;margin-top:15px;cursor:crosshair;}
 .container{display:flex;justify-content:space-between;}
+#q{font-size:36px;text-align:center;margin:20px 0;line-height:1.5;}
+#answer{font-size:22px;padding:6px;width:280px;text-align:center;display:block;margin:10px auto;}
+#result{font-size:22px;text-align:center;margin-top:15px;}
+.math{text-align:center;margin:10px 0;}
+canvas{border:1px solid black;width:400px;height:300px;cursor:crosshair;}
+#mainContent{display:flex;justify-content:center;align-items:flex-start;gap:20px;}
+.leftPanel,#rightPanel{text-align:center;}
 </style>
 </head>
 <body>
 
-<h1>수학 문제</h1>
+<h1 style="text-align:center;">수학 문제</h1>
 
 <div class="container">
-  <div class="topic">
+  <div class="leftPanel topic">
     <b>단원 선택:</b><br>
     <button onclick="topic='root'; newQ()">거듭제곱근</button>
     <button onclick="topic='log'; newQ()">로그</button>
@@ -28,7 +30,8 @@ canvas{border:1px solid black;margin-top:15px;cursor:crosshair;}
     <button onclick="topic='seq'; newQ()">수열</button>
     <button onclick="topic='triangle'; newQ()">삼각형 도형</button>
   </div>
-  <div class="level">
+
+  <div class="rightPanel level">
     <b>난이도:</b><br>
     <button onclick="level=1; newQ()">1</button>
     <button onclick="level=2; newQ()">2</button>
@@ -36,68 +39,69 @@ canvas{border:1px solid black;margin-top:15px;cursor:crosshair;}
   </div>
 </div>
 
-<p id="q"></p>
-<input id="answer" placeholder="답 입력">
-
-<div class="math">
-  <button onclick="add('√')">√</button>
-  <button onclick="add('π')">π</button>
-  <button onclick="add('sin')">sin</button>
-  <button onclick="add('cos')">cos</button>
-  <button onclick="add('tan')">tan</button>
-  <button onclick="add('^')">^</button>
-  <button onclick="add('/')">/</button>
+<div id="mainContent">
+  <div>
+    <p id="q"></p>
+    <input id="answer" placeholder="답 입력">
+    <div class="math">
+      <button onclick="add('√')">√</button>
+      <button onclick="add('π')">π</button>
+      <button onclick="add('sin')">sin</button>
+      <button onclick="add('cos')">cos</button>
+      <button onclick="add('tan')">tan</button>
+      <button onclick="add('^')">^</button>
+      <button onclick="add('/')">/</button>
+    </div>
+    <button onclick="check()">확인</button>
+    <button onclick="newQ()">다음 문제</button>
+    <p id="result"></p>
+  </div>
+  
+  <div>
+    <canvas id="canvas"></canvas>
+    <br>
+    <button onclick="clearCanvas()">풀이 지우기</button>
+  </div>
 </div>
-
-<button onclick="check()">확인</button>
-<button onclick="newQ()">다음 문제</button>
-<p id="result"></p>
-
-<canvas id="canvas" width="500" height="300"></canvas><br>
-<button onclick="clearCanvas()">풀이 지우기</button>
 
 <script>
 let topic='root', level=1, answer;
 
+// 랜덤 함수
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
+// 문제 생성
 function newQ(){
   document.getElementById("answer").value="";
   document.getElementById("result").innerText="";
 
   let qtext="", ans="";
 
-  // 난이도 단계별 연산/조건 수
-  let stage=level; // 단계 수
-  let operations=[];
-
-  function addOp(op){operations.push(op);}
-
+  // 난이도 단계별 복합 연산
   if(topic=='root'){
-    let n=rand(2,5*level), m=rand(2,5*level);
-    addOp("√"+(n*n*m*m));
-    if(stage>=2){addOp("+"+rand(1,10*level));}
-    if(stage>=3){addOp("-"+rand(1,10*level));}
-    qtext="다음 식을 간단히 하여라: "+operations.join(" ");
-    ans="√"+(n*n)+"*"+n; // 예시, 실제 계산은 단계별 가능
+    // 제곱근 문제, 루트 완전 제곱수 처리
+    let n=rand(2,10*level);
+    let sq=n*n;
+    qtext="√"+sq+" 를 간단히 하여라.";
+    ans=String(n);
   }
 
   if(topic=='log'){
-    let base=rand(2,4+level), p1=rand(2,3+level), p2=rand(1,3+level);
-    addOp("log"+base+"("+Math.pow(base,p1*p2)+")");
-    if(stage>=2){addOp("-log"+base+"("+Math.pow(base,p2)+")");}
-    if(stage>=3){addOp("+log"+base+"("+Math.pow(base,rand(1,3))+")");}
-    qtext="다음 식을 계산하라: "+operations.join(" ");
-    ans=String(p1); 
+    // 로그 문제 숫자 제한 (몇백 단위)
+    let base=rand(2,5);
+    let power=rand(2,3+level);
+    let num=Math.pow(base,power);
+    qtext="log"+base+"("+num+") 의 값은?";
+    ans=String(power);
   }
 
   if(topic=='tri'){
     let list=[
-      ["sin30°cos60°+cos30°sin60°","1"],
-      ["tan45°+tan30°","1+√3/3"],
-      ["sin60°/cos30°","√3"],
-      ["1-cos60°","1/2"],
-      ["sin45°cos45°","1/2"]
+      ["sin30°","1/2"],
+      ["cos60°","1/2"],
+      ["tan45°","1"],
+      ["sin60°","√3/2"],
+      ["cos45°","1/√2"]
     ]
     let p=list[rand(0,list.length-1)];
     qtext=p[0]+" 의 값은?";
@@ -105,27 +109,36 @@ function newQ(){
   }
 
   if(topic=='seq'){
+    // 난이도에 따라 등차/등비 혼합
     if(rand(1,2)==1){
-      let a1=rand(1,5*level), d=rand(1,5*level), n=rand(5,12);
-      if(stage>=2){d+=rand(1,3);}
+      let a1=rand(1,5*level);
+      let d=rand(1,5*level);
+      let n=rand(3,6+level);
       qtext="등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" 값을 구하라.";
       ans=String(a1+(n-1)*d);
-    } else{
-      let a1=rand(1,5*level), r=rand(2,3+level), n=rand(3,6);
+    }else{
+      let a1=rand(1,5*level);
+      let r=rand(2,3);
+      let n=rand(3,5);
       qtext="등비수열 a₁="+a1+", r="+r+" 일 때 a"+n+" 값을 구하라.";
       ans=String(a1*Math.pow(r,n-1));
     }
   }
 
   if(topic=='triangle'){
-    let a=rand(3,10*level), b=rand(3,10*level), t=rand(1,2);
-    if(t==1){
+    let a=rand(3,10*level), b=rand(3,10*level);
+    if(rand(1,2)==1){
       qtext="직각삼각형 두 변 "+a+", "+b+" 일 때 빗변 길이?";
-      ans="√"+(a*a+b*b);
+      let c=Math.sqrt(a*a+b*b);
+      // 만약 제곱근 완전제곱이면 정수로 표시
+      let cInt=Math.round(c);
+      if(cInt*cInt==(a*a+b*b)) ans=String(cInt);
+      else ans="√"+(a*a+b*b);
     }else{
       let angle=[30,45,60][rand(0,2)];
+      let h=Math.round(a*Math.sin(angle*Math.PI/180));
       qtext="직각삼각형 한 변 "+a+", 각 θ="+angle+"° 높이 h?";
-      ans=(a*Math.sin(angle*Math.PI/180)).toFixed(2);
+      ans=String(h);
     }
   }
 
@@ -154,8 +167,5 @@ function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
 newQ();
 </script>
-</body>
-</html>
-
 </body>
 </html>
