@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>덧셈 게임</title>
+</head>
+<body>
+
+<h1>덧셈 게임</h1>
+
+<p id="q"></p>
+
+<input id="a" type="number">
+<button onclick="check()">확인</button>
+
+<p id="result"></p>
+
+<script>
+
+let x,y
+
+function newQ(){
+ x=Math.floor(Math.random()*20)+1
+ y=Math.floor(Math.random()*20)+1
+ document.getElementById("q").innerText=x+" + "+y+" = ?"
+}
+
+function check(){
+ let user=Number(document.getElementById("a").value)
+ let answer=x+y
+
+ if(user===answer){
+  document.getElementById("result").innerText="정답!"
+ }else{
+  document.getElementById("result").innerText="틀림 정답:"+answer
+ }
+
+ newQ()
+}
+
+newQ()
+
+</script>
+
+</body>
+</html>
