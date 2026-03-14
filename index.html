@@ -9,7 +9,7 @@
 body{
 text-align:center;
 font-family:Arial;
-margin-top:80px;
+margin-top:60px;
 }
 
 #q{
@@ -20,14 +20,14 @@ margin-bottom:40px;
 input{
 font-size:25px;
 padding:10px;
-width:200px;
+width:260px;
 text-align:center;
 }
 
 button{
-font-size:20px;
-padding:10px 20px;
-margin-top:20px;
+font-size:18px;
+padding:10px 15px;
+margin:5px;
 }
 
 #result{
@@ -35,22 +35,14 @@ margin-top:30px;
 font-size:25px;
 }
 
-/* 분수 모양 */
-
-.frac{
-display:inline-block;
-text-align:center;
-font-size:40px;
+.topic button{
+font-size:18px;
+padding:10px 20px;
 }
 
-.top{
-border-bottom:2px solid black;
-display:block;
-padding:0 5px;
-}
-
-.bottom{
-display:block;
+.math button{
+font-size:20px;
+padding:10px 15px;
 }
 
 </style>
@@ -60,9 +52,32 @@ display:block;
 
 <h1>수학 문제</h1>
 
+<div class="topic">
+
+<button onclick="topic='root';newQ()">거듭제곱근</button>
+<button onclick="topic='log';newQ()">로그</button>
+<button onclick="topic='tri';newQ()">삼각함수</button>
+<button onclick="topic='seq';newQ()">수열</button>
+
+</div>
+
 <p id="q"></p>
 
 <input id="answer" placeholder="답 입력">
+
+<br>
+
+<div class="math">
+
+<button onclick="add('√')">√</button>
+<button onclick="add('π')">π</button>
+<button onclick="add('sin')">sin</button>
+<button onclick="add('cos')">cos</button>
+<button onclick="add('tan')">tan</button>
+<button onclick="add('^')">^</button>
+<button onclick="add('/')">/</button>
+
+</div>
 
 <br>
 
@@ -75,6 +90,7 @@ display:block;
 <script>
 
 let answer
+let topic="root"
 
 function rand(a,b){
 return Math.floor(Math.random()*(b-a+1))+a
@@ -82,11 +98,7 @@ return Math.floor(Math.random()*(b-a+1))+a
 
 function newQ(){
 
-let type=rand(1,4)
-
-/* 거듭제곱근 */
-
-if(type==1){
+if(topic=="root"){
 
 let n=rand(2,10)
 let a=n*n*rand(2,5)
@@ -97,9 +109,7 @@ answer=n+"√"+(a/(n*n))
 
 }
 
-/* 로그 */
-
-if(type==2){
+if(topic=="log"){
 
 let base=rand(2,5)
 let power=rand(2,4)
@@ -112,22 +122,24 @@ answer=String(power)
 
 }
 
-/* 삼각함수 */
+if(topic=="tri"){
 
-if(type==3){
+let arr=[
+["sin30°","1/2"],
+["cos60°","1/2"],
+["tan45°","1"],
+["sin90°","1"]
+]
 
-let q="sin 30° = ?"
+let p=arr[rand(0,arr.length-1)]
 
-document.getElementById("q").innerHTML=
-'sin 30° = <span class="frac"><span class="top">1</span><span class="bottom">2</span></span>'
+document.getElementById("q").innerText=p[0]+" = ?"
 
-answer="1/2"
+answer=p[1]
 
 }
 
-/* 수열 */
-
-if(type==4){
+if(topic=="seq"){
 
 let a1=rand(1,10)
 let d=rand(1,5)
@@ -142,6 +154,13 @@ answer=String(a1+(n-1)*d)
 
 document.getElementById("answer").value=""
 document.getElementById("result").innerText=""
+
+}
+
+function add(s){
+
+let input=document.getElementById("answer")
+input.value+=s
 
 }
 
@@ -161,5 +180,7 @@ newQ()
 
 </script>
 
+</body>
+</html>
 </body>
 </html>
