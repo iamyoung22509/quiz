@@ -75,8 +75,9 @@ function newQ(){
 
   let qtext="", ans="";
 
-  // 고난도 조건 문제 예시
+  // 고난도 조건 문제
   if(topic=='root' && level>=2){
+    // √a+³√b 자연수 조건 문제 예시
     let aMin=20,aMax=50;
     let bMin=60,bMax=150;
     let validPairs=[];
@@ -88,15 +89,14 @@ function newQ(){
     }
     if(validPairs.length>0){
       let maxPair=validPairs.reduce((prev,curr)=>curr[0]+curr[1]>prev[0]+prev[1]?curr:prev,[0,0,0]);
-      qtext=`20 ≤ a ≤ 50, 60 ≤ b ≤ 150 일때 √a + ³√b 가 자연수가 되도록 하는 a,b에 대하여 a+b의 최댓값을 구하시오.`;
+      qtext=`조건: 20 ≤ a ≤ 50, 60 ≤ b ≤ 150\n√a + ³√b가 자연수가 되도록 하는 a,b에 대해 a+b의 최댓값을 구하시오.`;
       ans=String(maxPair[0]+maxPair[1]);
     }else{
-      qtext="조건을 만족하는 a,b가 없습니다. (예시)";
+      qtext="조건 만족 a,b 없음";
       ans="예시 없음";
     }
   }
   else{
-    // 일반 난이도 문제
     if(topic=='root'){
       let n=rand(2,10*level);
       qtext="√"+(n*n)+" 를 간단히 하여라.";
@@ -160,13 +160,14 @@ function check(){
   document.getElementById("result").innerText=(user==answer)?"정답!":"틀림 정답: "+answer;
 }
 
-// 그림판
+// 그림판 (문제 옆, 높이 맞춤)
 let canvas=document.getElementById("canvas");
 let ctx=canvas.getContext("2d");
 let drawing=false;
 canvas.onmousedown=e=>{drawing=true; ctx.beginPath(); ctx.moveTo(e.offsetX,e.offsetY);}
 canvas.onmousemove=e=>{if(drawing){ctx.lineTo(e.offsetX,e.offsetY); ctx.stroke();}}
 canvas.onmouseup=e=>{drawing=false;}
+canvas.onmouseleave=e=>{drawing=false;}
 function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
 newQ();
