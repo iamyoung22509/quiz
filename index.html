@@ -2,45 +2,122 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>덧셈 게임</title>
+<title>수학 퀴즈</title>
 </head>
 <body>
 
-<h1>덧셈 게임</h1>
+<h1>수학 문제</h1>
 
 <p id="q"></p>
 
-<input id="a" type="number">
-<button onclick="check()">확인</button>
+<div id="choices"></div>
 
 <p id="result"></p>
 
+<button onclick="newQ()">다음 문제</button>
+
 <script>
 
-let x,y
+let answer
 
-function newQ(){
- x=Math.floor(Math.random()*20)+1
- y=Math.floor(Math.random()*20)+1
- document.getElementById("q").innerText=x+" + "+y+" = ?"
+let problems=[
+
+{
+q:"f(x)=x²−4x+5 일 때 f(3)의 값은?",
+choices:["2","3","4","5"],
+a:"2"
+},
+
+{
+q:"sin²θ + cos²θ = ?",
+choices:["0","1","2","sinθ"],
+a:"1"
+},
+
+{
+q:"log₂(16) + log₂(4) = ?",
+choices:["4","5","6","7"],
+a:"6"
+},
+
+{
+q:"수열 aₙ=3n+1 일 때 a₅ = ?",
+choices:["13","14","15","16"],
+a:"16"
+},
+
+{
+q:"x² −7x +10 =0 의 해는?",
+choices:["2,5","3,4","1,10","2,7"],
+a:"2,5"
+},
+
+{
+q:"lim(x→0) (sin x)/x = ?",
+choices:["0","1","∞","-1"],
+a:"1"
+},
+
+{
+q:"미분 d/dx (x³) = ?",
+choices:["3x²","x²","2x","x³"],
+a:"3x²"
+},
+
+{
+q:"cos(60°) = ?",
+choices:["1","1/2","√2","0"],
+a:"1/2"
+},
+
+{
+q:"등비수열 2,6,18,... 의 공비는?",
+choices:["2","3","4","6"],
+a:"3"
+},
+
+{
+q:"∫2x dx = ?",
+choices:["x² + C","2x²","x + C","x²"],
+a:"x² + C"
 }
 
-function check(){
- let user=Number(document.getElementById("a").value)
- let answer=x+y
+]
 
- if(user===answer){
-  document.getElementById("result").innerText="정답!"
- }else{
-  document.getElementById("result").innerText="틀림 정답:"+answer
- }
+function newQ(){
 
- newQ()
+let p=problems[Math.floor(Math.random()*problems.length)]
+
+answer=p.a
+
+document.getElementById("q").innerText=p.q
+
+let html=""
+
+p.choices.forEach(c=>{
+html+=`<button onclick="check('${c}')">${c}</button><br>`
+})
+
+document.getElementById("choices").innerHTML=html
+
+}
+
+function check(c){
+
+if(c===answer){
+document.getElementById("result").innerText="정답!"
+}else{
+document.getElementById("result").innerText="틀림 정답:"+answer
+}
+
 }
 
 newQ()
 
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
