@@ -2,49 +2,44 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>수능 모의고사 수학 퀴즈</title>
-
+<title>수학 문제</title>
 <style>
 body{
   font-family: Arial;
-  margin: 20px;
+  margin:20px;
 }
-
 header{
   display:flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-
 .topic button, .level button, .math button{
   font-size: 16px;
   padding: 8px 12px;
   margin: 2px;
 }
-
 #q{
-  font-size: 36px;
-  margin-bottom: 30px;
+  font-size: 34px;
+  margin-bottom: 20px;
   line-height:1.5;
 }
-
 #answer{
-  font-size: 24px;
-  padding: 8px;
+  font-size: 22px;
+  padding: 6px;
   width: 280px;
   text-align:center;
 }
-
 #result{
-  margin-top:20px;
+  margin-top:15px;
   font-size:22px;
 }
-
-.math{
-  margin: 10px 0;
+.math{margin:10px 0;}
+canvas{
+  border:1px solid black;
+  margin-top:15px;
+  cursor:crosshair;
 }
-
 .container{
   display:flex;
   justify-content: space-between;
@@ -53,18 +48,17 @@ header{
 </head>
 <body>
 
-<h1>수능 모의고사 수학 문제</h1>
+<h1>수학 문제</h1>
 
 <div class="container">
   <div class="topic">
     <b>단원 선택:</b><br>
-    <button onclick="topic='root';newQ()">거듭제곱근</button>
-    <button onclick="topic='log';newQ()">로그</button>
-    <button onclick="topic='tri';newQ()">삼각함수</button>
-    <button onclick="topic='seq';newQ()">수열</button>
-    <button onclick="topic='triangle';newQ()">삼각형 도형</button>
+    <button onclick="topic='root'; newQ()">거듭제곱근</button>
+    <button onclick="topic='log'; newQ()">로그</button>
+    <button onclick="topic='tri'; newQ()">삼각함수</button>
+    <button onclick="topic='seq'; newQ()">수열</button>
+    <button onclick="topic='triangle'; newQ()">삼각형 도형</button>
   </div>
-
   <div class="level">
     <b>난이도:</b><br>
     <button onclick="level=1; newQ()">1</button>
@@ -90,97 +84,94 @@ header{
 <button onclick="newQ()">다음 문제</button>
 <p id="result"></p>
 
-<script>
-let topic="root"
-let level=1
-let answer
+<canvas id="canvas" width="500" height="300"></canvas>
+<br>
+<button onclick="clearCanvas()">풀이 지우기</button>
 
+<script>
+let topic='root', level=1, answer
+
+// 랜덤
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
 // 문제 생성
 function newQ(){
-document.getElementById("answer").value=""
-document.getElementById("result").innerText=""
+  document.getElementById("answer").value=""
+  document.getElementById("result").innerText=""
 
-if(topic=="root"){
-  let n = rand(2, 8*level)
-  let m = rand(2, 6*level)
-  let a = n*n*m*m
-  document.getElementById("q").innerText = "√"+a+" 를 가장 간단히 하여라."
-  answer = n+"√"+(a/(n*n))
-}
+  if(topic=='root'){
+    let n=rand(2,8*level), m=rand(2,5*level)
+    let a=n*n*m*m
+    document.getElementById("q").innerText="√"+a+" 를 가장 간단히 하여라."
+    answer=n+"√"+(a/(n*n))
+  }
 
-if(topic=="log"){
-  let base = rand(2, 4+level)
-  let p1 = rand(2,4+level)
-  let p2 = rand(1,3*level)
-  let num = Math.pow(base,p1)*Math.pow(base,p2)
-  document.getElementById("q").innerText = 
-    "log"+base+"("+num+") - log"+base+"("+Math.pow(base,p2)+") = ?"
-  answer = String(p1)
-}
+  if(topic=='log'){
+    let base=rand(2,4+level), p1=rand(2,4+level), p2=rand(1,3*level)
+    let num=Math.pow(base,p1)*Math.pow(base,p2)
+    document.getElementById("q").innerText="log"+base+"("+num+") - log"+base+"("+Math.pow(base,p2)+") = ?"
+    answer=String(p1)
+  }
 
-if(topic=="tri"){
-  let list=[
-    ["sin30°cos60°+cos30°sin60°","1"],
-    ["tan45°+tan30°","1+√3/3"],
-    ["sin60°/cos30°","√3"],
-    ["1-cos60°","1/2"],
-    ["sin45°cos45°","1/2"]
-  ]
-  let p = list[rand(0,list.length-1)]
-  document.getElementById("q").innerText=p[0]+" 의 값은?"
-  answer=p[1]
-}
+  if(topic=='tri'){
+    let list=[
+      ["sin30°cos60°+cos30°sin60°","1"],
+      ["tan45°+tan30°","1+√3/3"],
+      ["sin60°/cos30°","√3"],
+      ["1-cos60°","1/2"],
+      ["sin45°cos45°","1/2"]
+    ]
+    let p=list[rand(0,list.length-1)]
+    document.getElementById("q").innerText=p[0]+" 의 값은?"
+    answer=p[1]
+  }
 
-if(topic=="seq"){
-  let type2 = rand(1,2)
-  if(type2==1){
-    let a1=rand(1,10*level)
-    let d=rand(2,5*level)
-    let n=rand(5,12)
-    document.getElementById("q").innerText=
-      "등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" 의 값을 구하여라."
-    answer=String(a1+(n-1)*d)
-  }else{
-    let a1=rand(1,5*level)
-    let r=rand(2,3+level)
-    let n=rand(3,6)
-    document.getElementById("q").innerText=
-      "등비수열 a₁="+a1+", r="+r+" 일 때 a"+n+" 의 값을 구하여라."
-    answer=String(a1*Math.pow(r,n-1))
+  if(topic=='seq'){
+    let type2=rand(1,2)
+    if(type2==1){
+      let a1=rand(1,10*level), d=rand(2,5*level), n=rand(5,12)
+      document.getElementById("q").innerText="등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" 값을 구하여라."
+      answer=String(a1+(n-1)*d)
+    }else{
+      let a1=rand(1,5*level), r=rand(2,3+level), n=rand(3,6)
+      document.getElementById("q").innerText="등비수열 a₁="+a1+", r="+r+" 일 때 a"+n+" 값을 구하여라."
+      answer=String(a1*Math.pow(r,n-1))
+    }
+  }
+
+  if(topic=='triangle'){
+    let a=rand(3,12*level), b=rand(3,12*level), type2=rand(1,2)
+    if(type2==1){
+      document.getElementById("q").innerText="직각삼각형 두 변 "+a+", "+b+" 일 때 빗변 길이?"
+      answer="√"+(a*a+b*b)
+    }else{
+      let angle=[30,45,60][rand(0,2)]
+      document.getElementById("q").innerText="직각삼각형 한 변 "+a+", 각 θ="+angle+"° 높이 h?"
+      answer=(a*Math.sin(angle*Math.PI/180)).toFixed(2)
+    }
   }
 }
 
-if(topic=="triangle"){
-  let a=rand(3,12*level)
-  let b=rand(3,12*level)
-  let type2 = rand(1,2)
-  if(type2==1){
-    document.getElementById("q").innerText=
-      "직각삼각형 두 변의 길이가 "+a+", "+b+" 일 때 빗변의 길이는?"
-    answer="√"+(a*a+b*b)
-  }else{
-    let angle = [30,45,60][rand(0,2)]
-    document.getElementById("q").innerText=
-      "직각삼각형 한 변 길이 "+a+", 각 θ="+angle+"° 일 때 높이 h를 구하여라."
-    answer=(a*Math.sin(angle*Math.PI/180)).toFixed(2)
-  }
-}
-}
-
+// 수학 입력 버튼
 function add(s){
-  document.getElementById("answer").value += s
+  document.getElementById("answer").value+=s
 }
 
+// 정답 확인
 function check(){
-  let user = document.getElementById("answer").value
-  if(user==answer){
-    document.getElementById("result").innerText="정답!"
-  }else{
-    document.getElementById("result").innerText="틀림 정답: "+answer
-  }
+  let user=document.getElementById("answer").value
+  if(user==answer) document.getElementById("result").innerText="정답!"
+  else document.getElementById("result").innerText="틀림 정답: "+answer
 }
+
+// 그림판
+let canvas=document.getElementById("canvas")
+let ctx=canvas.getContext("2d")
+let drawing=false
+canvas.onmousedown=function(e){drawing=true; ctx.beginPath(); ctx.moveTo(e.offsetX,e.offsetY)}
+canvas.onmousemove=function(e){if(drawing){ctx.lineTo(e.offsetX,e.offsetY); ctx.stroke()}}
+canvas.onmouseup=function(){drawing=false}
+function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height)}
 
 newQ()
 </script>
