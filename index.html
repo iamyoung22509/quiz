@@ -2,210 +2,191 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>수학 퀴즈</title>
+<title>수능 모의고사 수학 퀴즈</title>
 
 <style>
-
 body{
-text-align:center;
-font-family:Arial;
-margin-top:60px;
+  font-family: Arial;
+  margin: 20px;
+}
+
+header{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.topic button, .level button, .math button{
+  font-size: 16px;
+  padding: 8px 12px;
+  margin: 2px;
 }
 
 #q{
-font-size:38px;
-margin-bottom:40px;
-line-height:1.5;
+  font-size: 36px;
+  margin-bottom: 30px;
+  line-height:1.5;
 }
 
-input{
-font-size:24px;
-padding:10px;
-width:260px;
-text-align:center;
-}
-
-button{
-font-size:18px;
-padding:10px 15px;
-margin:5px;
+#answer{
+  font-size: 24px;
+  padding: 8px;
+  width: 280px;
+  text-align:center;
 }
 
 #result{
-margin-top:30px;
-font-size:24px;
+  margin-top:20px;
+  font-size:22px;
 }
 
-.math button{
-font-size:20px;
-padding:10px 15px;
+.math{
+  margin: 10px 0;
 }
 
+.container{
+  display:flex;
+  justify-content: space-between;
+}
 </style>
-
 </head>
 <body>
 
-<h1>수학 문제</h1>
+<h1>수능 모의고사 수학 문제</h1>
 
-<p id="q"></p>
+<div class="container">
+  <div class="topic">
+    <b>단원 선택:</b><br>
+    <button onclick="topic='root';newQ()">거듭제곱근</button>
+    <button onclick="topic='log';newQ()">로그</button>
+    <button onclick="topic='tri';newQ()">삼각함수</button>
+    <button onclick="topic='seq';newQ()">수열</button>
+    <button onclick="topic='triangle';newQ()">삼각형 도형</button>
+  </div>
 
-<input id="answer" placeholder="답 입력">
-
-<br>
-
-<div class="math">
-
-<button onclick="add('√')">√</button>
-<button onclick="add('π')">π</button>
-<button onclick="add('sin')">sin</button>
-<button onclick="add('cos')">cos</button>
-<button onclick="add('tan')">tan</button>
-<button onclick="add('^')">^</button>
-<button onclick="add('/')">/</button>
-
+  <div class="level">
+    <b>난이도:</b><br>
+    <button onclick="level=1; newQ()">1</button>
+    <button onclick="level=2; newQ()">2</button>
+    <button onclick="level=3; newQ()">3</button>
+  </div>
 </div>
 
-<br>
+<p id="q"></p>
+<input id="answer" placeholder="답 입력">
+
+<div class="math">
+  <button onclick="add('√')">√</button>
+  <button onclick="add('π')">π</button>
+  <button onclick="add('sin')">sin</button>
+  <button onclick="add('cos')">cos</button>
+  <button onclick="add('tan')">tan</button>
+  <button onclick="add('^')">^</button>
+  <button onclick="add('/')">/</button>
+</div>
 
 <button onclick="check()">확인</button>
-
+<button onclick="newQ()">다음 문제</button>
 <p id="result"></p>
 
-<button onclick="newQ()">다음 문제</button>
-
 <script>
-
+let topic="root"
+let level=1
 let answer
 
-function rand(a,b){
-return Math.floor(Math.random()*(b-a+1))+a
-}
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
+// 문제 생성
 function newQ(){
-
-let type=rand(1,6)
-
-/* 루트 문제 */
-
-if(type==1){
-
-let n=rand(2,10)
-let a=n*n*rand(2,6)
-
-document.getElementById("q").innerText=
-"√"+a+" 를 간단히 하여라."
-
-answer=n+"√"+(a/(n*n))
-
-}
-
-/* 로그 문제 */
-
-if(type==2){
-
-let base=rand(2,5)
-let power=rand(2,5)
-
-let num=Math.pow(base,power)
-
-document.getElementById("q").innerText=
-"log"+base+"("+num+") 의 값은?"
-
-answer=String(power)
-
-}
-
-/* 삼각함수 */
-
-if(type==3){
-
-let list=[
-["sin30°","1/2"],
-["cos60°","1/2"],
-["tan45°","1"],
-["sin90°","1"]
-]
-
-let p=list[rand(0,list.length-1)]
-
-document.getElementById("q").innerText=
-p[0]+" 의 값은?"
-
-answer=p[1]
-
-}
-
-/* 수열 */
-
-if(type==4){
-
-let a1=rand(1,10)
-let d=rand(1,5)
-let n=rand(5,10)
-
-document.getElementById("q").innerText=
-"등차수열에서 a₁="+a1+", d="+d+" 이다. a"+n+" 의 값을 구하여라."
-
-answer=String(a1+(n-1)*d)
-
-}
-
-/* 삼각형 문제 */
-
-if(type==5){
-
-let a=rand(3,10)
-let b=rand(3,10)
-
-document.getElementById("q").innerText=
-"직각삼각형에서 두 변의 길이가 "+a+", "+b+" 일 때 빗변의 길이는?"
-
-answer="√"+(a*a+b*b)
-
-}
-
-/* 조건 여러개 문제 */
-
-if(type==6){
-
-let a=rand(1,5)
-let b=rand(1,5)
-
-document.getElementById("q").innerText=
-"f(x)=x²+"+a+"x+"+b+" 일 때 f(1)의 값을 구하여라."
-
-answer=String(1+a+b)
-
-}
-
 document.getElementById("answer").value=""
 document.getElementById("result").innerText=""
 
+if(topic=="root"){
+  let n = rand(2, 8*level)
+  let m = rand(2, 6*level)
+  let a = n*n*m*m
+  document.getElementById("q").innerText = "√"+a+" 를 가장 간단히 하여라."
+  answer = n+"√"+(a/(n*n))
+}
+
+if(topic=="log"){
+  let base = rand(2, 4+level)
+  let p1 = rand(2,4+level)
+  let p2 = rand(1,3*level)
+  let num = Math.pow(base,p1)*Math.pow(base,p2)
+  document.getElementById("q").innerText = 
+    "log"+base+"("+num+") - log"+base+"("+Math.pow(base,p2)+") = ?"
+  answer = String(p1)
+}
+
+if(topic=="tri"){
+  let list=[
+    ["sin30°cos60°+cos30°sin60°","1"],
+    ["tan45°+tan30°","1+√3/3"],
+    ["sin60°/cos30°","√3"],
+    ["1-cos60°","1/2"],
+    ["sin45°cos45°","1/2"]
+  ]
+  let p = list[rand(0,list.length-1)]
+  document.getElementById("q").innerText=p[0]+" 의 값은?"
+  answer=p[1]
+}
+
+if(topic=="seq"){
+  let type2 = rand(1,2)
+  if(type2==1){
+    let a1=rand(1,10*level)
+    let d=rand(2,5*level)
+    let n=rand(5,12)
+    document.getElementById("q").innerText=
+      "등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" 의 값을 구하여라."
+    answer=String(a1+(n-1)*d)
+  }else{
+    let a1=rand(1,5*level)
+    let r=rand(2,3+level)
+    let n=rand(3,6)
+    document.getElementById("q").innerText=
+      "등비수열 a₁="+a1+", r="+r+" 일 때 a"+n+" 의 값을 구하여라."
+    answer=String(a1*Math.pow(r,n-1))
+  }
+}
+
+if(topic=="triangle"){
+  let a=rand(3,12*level)
+  let b=rand(3,12*level)
+  let type2 = rand(1,2)
+  if(type2==1){
+    document.getElementById("q").innerText=
+      "직각삼각형 두 변의 길이가 "+a+", "+b+" 일 때 빗변의 길이는?"
+    answer="√"+(a*a+b*b)
+  }else{
+    let angle = [30,45,60][rand(0,2)]
+    document.getElementById("q").innerText=
+      "직각삼각형 한 변 길이 "+a+", 각 θ="+angle+"° 일 때 높이 h를 구하여라."
+    answer=(a*Math.sin(angle*Math.PI/180)).toFixed(2)
+  }
+}
 }
 
 function add(s){
-
-let input=document.getElementById("answer")
-input.value+=s
-
+  document.getElementById("answer").value += s
 }
 
 function check(){
-
-let user=document.getElementById("answer").value
-
-if(user==answer){
-document.getElementById("result").innerText="정답!"
-}else{
-document.getElementById("result").innerText="틀림 정답: "+answer
-}
-
+  let user = document.getElementById("answer").value
+  if(user==answer){
+    document.getElementById("result").innerText="정답!"
+  }else{
+    document.getElementById("result").innerText="틀림 정답: "+answer
+  }
 }
 
 newQ()
-
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
