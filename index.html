@@ -13,12 +13,13 @@ margin-top:60px;
 }
 
 #q{
-font-size:40px;
+font-size:38px;
 margin-bottom:40px;
+line-height:1.5;
 }
 
 input{
-font-size:25px;
+font-size:24px;
 padding:10px;
 width:260px;
 text-align:center;
@@ -32,12 +33,7 @@ margin:5px;
 
 #result{
 margin-top:30px;
-font-size:25px;
-}
-
-.topic button{
-font-size:18px;
-padding:10px 20px;
+font-size:24px;
 }
 
 .math button{
@@ -51,15 +47,6 @@ padding:10px 15px;
 <body>
 
 <h1>수학 문제</h1>
-
-<div class="topic">
-
-<button onclick="topic='root';newQ()">거듭제곱근</button>
-<button onclick="topic='log';newQ()">로그</button>
-<button onclick="topic='tri';newQ()">삼각함수</button>
-<button onclick="topic='seq';newQ()">수열</button>
-
-</div>
 
 <p id="q"></p>
 
@@ -90,7 +77,6 @@ padding:10px 15px;
 <script>
 
 let answer
-let topic="root"
 
 function rand(a,b){
 return Math.floor(Math.random()*(b-a+1))+a
@@ -98,57 +84,98 @@ return Math.floor(Math.random()*(b-a+1))+a
 
 function newQ(){
 
-if(topic=="root"){
+let type=rand(1,6)
+
+/* 루트 문제 */
+
+if(type==1){
 
 let n=rand(2,10)
-let a=n*n*rand(2,5)
+let a=n*n*rand(2,6)
 
-document.getElementById("q").innerText="√"+a+" 를 간단히 하면?"
+document.getElementById("q").innerText=
+"√"+a+" 를 간단히 하여라."
 
 answer=n+"√"+(a/(n*n))
 
 }
 
-if(topic=="log"){
+/* 로그 문제 */
+
+if(type==2){
 
 let base=rand(2,5)
-let power=rand(2,4)
+let power=rand(2,5)
 
 let num=Math.pow(base,power)
 
-document.getElementById("q").innerText="log"+base+"("+num+") = ?"
+document.getElementById("q").innerText=
+"log"+base+"("+num+") 의 값은?"
 
 answer=String(power)
 
 }
 
-if(topic=="tri"){
+/* 삼각함수 */
 
-let arr=[
+if(type==3){
+
+let list=[
 ["sin30°","1/2"],
 ["cos60°","1/2"],
 ["tan45°","1"],
 ["sin90°","1"]
 ]
 
-let p=arr[rand(0,arr.length-1)]
+let p=list[rand(0,list.length-1)]
 
-document.getElementById("q").innerText=p[0]+" = ?"
+document.getElementById("q").innerText=
+p[0]+" 의 값은?"
 
 answer=p[1]
 
 }
 
-if(topic=="seq"){
+/* 수열 */
+
+if(type==4){
 
 let a1=rand(1,10)
 let d=rand(1,5)
 let n=rand(5,10)
 
 document.getElementById("q").innerText=
-"등차수열 a₁="+a1+", d="+d+" 일 때 a"+n+" = ?"
+"등차수열에서 a₁="+a1+", d="+d+" 이다. a"+n+" 의 값을 구하여라."
 
 answer=String(a1+(n-1)*d)
+
+}
+
+/* 삼각형 문제 */
+
+if(type==5){
+
+let a=rand(3,10)
+let b=rand(3,10)
+
+document.getElementById("q").innerText=
+"직각삼각형에서 두 변의 길이가 "+a+", "+b+" 일 때 빗변의 길이는?"
+
+answer="√"+(a*a+b*b)
+
+}
+
+/* 조건 여러개 문제 */
+
+if(type==6){
+
+let a=rand(1,5)
+let b=rand(1,5)
+
+document.getElementById("q").innerText=
+"f(x)=x²+"+a+"x+"+b+" 일 때 f(1)의 값을 구하여라."
+
+answer=String(1+a+b)
 
 }
 
@@ -180,7 +207,5 @@ newQ()
 
 </script>
 
-</body>
-</html>
 </body>
 </html>
